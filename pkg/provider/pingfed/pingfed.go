@@ -1,9 +1,11 @@
 package pingfed
 
 import (
+	"bytes"
 	"context"
 	"encoding/base64"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -55,7 +57,11 @@ type ctxKey string
 // Authenticate Authenticate to PingFed and return the data from the body of the SAML assertion.
 func (ac *Client) Authenticate(loginDetails *creds.LoginDetails) (string, error) {
 	u := fmt.Sprintf("%s/idp/startSSO.ping?PartnerSpId=%s", loginDetails.URL, ac.idpAccount.AmazonWebservicesURN)
-	req, err := http.NewRequest("GET", u, nil)
+	var body io.Reader = nil
+	if ac.idpAccount.Body != "" {
+		body = bytes.NewBuffer([]byte(ac.idpAccount.Body))
+	}
+	req, err := http.NewRequest("GET", u, body)
 	if err != nil {
 		return "", errors.Wrap(err, "error building request")
 	}

@@ -53,6 +53,7 @@ type IDPAccount struct {
 	TargetURL             string `ini:"target_url"`
 	DisableRememberDevice bool   `ini:"disable_remember_device"` // used by Okta
 	DisableSessions       bool   `ini:"disable_sessions"`        // used by Okta
+	Body                  string `ini:"body"`                    // used by Ping
 }
 
 func (ia IDPAccount) String() string {
